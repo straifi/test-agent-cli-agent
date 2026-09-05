@@ -87,19 +87,10 @@ uv run pytest tests/unit
 
 ---
 
-## 🐙 Push to GitHub Repository
+## 🐙 GitHub Repository
 
-The repository has been initialized with the `main` branch and the remote set to:
-`https://github.com/straifi/investment-agent.git`
-
-To push the codebase to your public GitHub repository:
-
-1. Ensure you have created a public repository named `investment-agent` on [GitHub](https://github.com/new).
-2. Authenticate and push:
-```bash
-git push -u origin main
-```
-*(You will be prompted for your GitHub username `straifi` and your GitHub Personal Access Token or SSH key).*
+The repository remote is configured for:
+`https://github.com/straifi/test-agent-cli-agent.git`
 
 ---
 

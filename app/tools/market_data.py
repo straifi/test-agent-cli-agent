@@ -15,9 +15,24 @@
 """Market data tools for retrieving quotes, historical performance, news, and forecasts."""
 
 import concurrent.futures
+import math
 from typing import Any
 
 import yfinance as yf
+
+
+def _sanitize_for_json(obj: Any) -> Any:
+    """Recursively converts NaN and Infinite floats to safe numbers to prevent JSON serialization errors."""
+    if isinstance(obj, dict):
+        return {k: _sanitize_for_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_sanitize_for_json(item) for item in obj]
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return 0.0
+        return obj
+    return obj
+
 
 # Candidate universes for each of the 4 domains
 DOMAIN_CANDIDATES = {
@@ -291,21 +306,23 @@ def get_asset_details(symbol: str, domain: str = "stocks") -> dict[str, Any]:
         symbol, name, domain, day_change_pct, forecast_gain_pct, metrics, recent_news
     )
 
-    return {
-        "symbol": symbol,
-        "name": name,
-        "category": category,
-        "domain": domain,
-        "current_price": current_price,
-        "day_change": day_change,
-        "day_change_pct": day_change_pct,
-        "target_price": target_price,
-        "forecast_gain_pct": forecast_gain_pct,
-        "metrics": metrics,
-        "history": history_points,
-        "news": recent_news,
-        "thesis": thesis,
-    }
+    return _sanitize_for_json(
+        {
+            "symbol": symbol,
+            "name": name,
+            "category": category,
+            "domain": domain,
+            "current_price": current_price,
+            "day_change": day_change,
+            "day_change_pct": day_change_pct,
+            "target_price": target_price,
+            "forecast_gain_pct": forecast_gain_pct,
+            "metrics": metrics,
+            "history": history_points,
+            "news": recent_news,
+            "thesis": thesis,
+        }
+    )
 
 
 def _generate_thesis(
@@ -402,4 +419,4 @@ def get_all_domains_recommendations() -> dict[str, list[dict[str, Any]]]:
             except Exception as e:
                 print(f"Error getting recommendations for {d}: {e}")
                 all_data[d] = []
-    return all_data
+    return _sanitize_for_json(all_data)

@@ -1,95 +1,133 @@
-# investment-agent
+# Autonomous Multi-Domain Investment Agent 📈
 
-Simple ReAct agent
-Agent generated with `agents-cli` version `1.5.0`
+An autonomous AI agent platform powered by **Google ADK (Agent Development Kit)** and **Gemini 3.7 Flash** that conducts continuous financial investment research across 4 dedicated asset domains:
+- 📈 **Stocks** (Equities & High-Conviction Growth)
+- 🌐 **ETFs** (Index Tracking & Thematic Sector Funds)
+- 🪙 **Cryptos** (Digital Assets & L1 Protocols)
+- 🛢️ **Commodities** (Energy, Precious Metals & Agriculture)
 
-## Project Structure
-
-```
-investment-agent/
-├── app/         # Core agent code
-│   ├── agent.py               # Main agent logic
-│   ├── fast_api_app.py        # FastAPI Backend server
-│   └── app_utils/             # App utilities and helpers
-├── .cloudbuild/               # CI/CD pipeline configurations for Google Cloud Build
-├── deployment/                # Infrastructure and deployment scripts
-├── tests/                     # Unit, integration, and load tests
-├── GEMINI.md                  # AI-assisted development guide
-└── pyproject.toml             # Project dependencies
-```
-
-> 💡 **Tip:** Use [Antigravity CLI](https://antigravity.google/) for AI-assisted development - project context is pre-configured in `GEMINI.md`.
-
-## Requirements
-
-Before you begin, ensure you have:
-- **uv**: Python package manager (used for all dependency management in this project) - [Install](https://docs.astral.sh/uv/getting-started/installation/) ([add packages](https://docs.astral.sh/uv/concepts/dependencies/) with `uv add <package>`)
-- **agents-cli**: Agents CLI - Install with `uv tool install google-agents-cli`
-- **Google Cloud SDK**: For GCP services - [Install](https://cloud.google.com/sdk/docs/install)
-- **Terraform**: For infrastructure deployment - [Install](https://developer.hashicorp.com/terraform/downloads)
-
-
-## Quick Start
-
-Install `agents-cli` and its skills if not already installed:
-
-```bash
-uvx google-agents-cli setup
-```
-
-Install required packages:
-
-```bash
-agents-cli install
-```
-
-Test the agent with a local web server:
-
-```bash
-agents-cli playground
-```
-
-You can also use features from the [ADK](https://adk.dev/) CLI with `uv run adk`.
-
-## Commands
-
-| Command              | Description                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| `agents-cli install` | Install dependencies using uv                                                         |
-| `agents-cli playground` | Launch local development environment                                                  |
-| `agents-cli lint`    | Run code quality checks                                                               |
-| `agents-cli eval`    | Evaluate agent behavior (generate, grade, analyze, and more — see `agents-cli eval --help`) |
-| `uv run pytest tests/unit tests/integration` | Run unit and integration tests                                                        |
-| `agents-cli deploy`  | Deploy agent to Agent Runtime                                                                |
-| `agents-cli publish gemini-enterprise` | Register deployed agent to Gemini Enterprise                    || [A2A Inspector](https://github.com/a2aproject/a2a-inspector) | Launch A2A Protocol Inspector                                                        |
-| `agents-cli infra single-project` | Set up single-project infrastructure using Terraform                              |
-
-## 🛠️ Project Management
-
-| Command | What It Does |
-|---------|--------------|
-| `agents-cli infra cicd` | One-command setup of entire CI/CD pipeline + infrastructure |
-| `agents-cli scaffold upgrade` | Auto-upgrade to latest version while preserving customizations |
+The agent features 4 dedicated, autonomous subagents coordinated by a lead investment coordinator, coupled with a real-time 4-tab interactive web dashboard featuring live quotes, Chart.js interactive historical charts, forecasted gains %, valuation metrics, and news catalysts.
 
 ---
 
-## Development
+## 🏛️ Architecture
 
-Edit your agent logic in `app/agent.py` and test with `agents-cli playground` - it auto-reloads on save.
+```
+                      ┌───────────────────────────────────────┐
+                      │   Investment Coordinator (Root Agent) │
+                      │        (Gemini 3.7 Flash + ADK)       │
+                      └──────────────────┬────────────────────┘
+                                         │
+        ┌──────────────────┬─────────────┴──────┬──────────────────┐
+        ▼                  ▼                    ▼                  ▼
+┌───────────────┐  ┌───────────────┐   ┌────────────────┐  ┌────────────────┐
+│  Stock Agent  │  │   ETF Agent   │   │  Crypto Agent  │  │Commodity Agent │
+│ (Autonomous)  │  │ (Autonomous)  │   │  (Autonomous)  │  │  (Autonomous)  │
+└───────┬───────┘  └───────┬───────┘   └────────┬───────┘  └────────┬───────┘
+        └──────────────────┼────────────────────┴───────────────────┘
+                           ▼
+          ┌───────────────────────────────────┐
+          │     Yahoo Finance Market Engine   │
+          │  (Quotes, 3M History, Forecasts)  │
+          └────────────────┬──────────────────┘
+                           ▼
+          ┌───────────────────────────────────┐
+          │  FastAPI + 4-Tab Web Dashboard    │
+          │   (Chart.js, Live Metrics, Chat)  │
+          └───────────────────────────────────┘
+```
 
-## Deployment
+### Dedicated Autonomous Subagents
+1. **`StockResearchAgent`**: Scans mega-cap and growth equities, evaluates P/E ratios, forward guidance, and market news to select top 5 equity picks.
+2. **`ETFResearchAgent`**: Analyzes market index funds and thematic ETFs, evaluating expense ratios, diversification, and sector momentum.
+3. **`CryptoResearchAgent`**: Screens leading blockchain assets, analyzing 24h trading volume, volatility metrics, and crypto catalysts.
+4. **`CommodityResearchAgent`**: Analyzes precious metals, energy, and agriculture, evaluating supply/demand dynamics and inflation hedging.
 
+---
+
+## 🖥️ 4-Tab Interactive Web Dashboard
+
+The web dashboard is served directly by the FastAPI application:
+- **Tabs**: Dedicated tab views for **Stocks**, **ETFs**, **Cryptos**, and **Commodities**.
+- **Top 5 Picks**: Card layout with ticker symbol, company name, current price, and 24h % change.
+- **Forecast Gain & Target Price**: Projected returns (e.g. `+42.01% Expected Gain`, target `$327.15`).
+- **Interactive Charts**: Responsive line charts powered by Chart.js displaying 3-month daily closing trends.
+- **Key Metrics**: 52-week high/low range, P/E ratio, trading volume, and 1-month return trend.
+- **Subagent Rationale & News**: AI thesis explaining the selection and linked market news catalysts.
+- **Interactive Chat**: Query the investment agent or subagents directly from the web interface.
+
+---
+
+## 🚀 Quick Start (Local)
+
+### 1. Install Dependencies
 ```bash
-gcloud config set project <your-project-id>
+# Install uv tool and dependencies
+uv tool install google-agents-cli
+agents-cli install
+```
+
+### 2. Run the Web Dashboard
+```bash
+uv run python -m app.fast_api_app
+```
+Open your browser at:
+- **Interactive 4-Tab Dashboard**: [http://localhost:8000/](http://localhost:8000/) or [http://localhost:8000/dashboard](http://localhost:8000/dashboard)
+- **ADK Developer Playground**: [http://localhost:8000/dev-ui](http://localhost:8000/dev-ui)
+- **FastAPI OpenAPI Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 3. Run Quality & Unit Tests
+```bash
+# Code quality checks (ruff, codespell, ty type checker)
+agents-cli lint
+
+# Run unit tests
+uv run pytest tests/unit
+```
+
+---
+
+## 🐙 Push to GitHub Repository
+
+The repository has been initialized with the `main` branch and the remote set to:
+`https://github.com/straifi/investment-agent.git`
+
+To push the codebase to your public GitHub repository:
+
+1. Ensure you have created a public repository named `investment-agent` on [GitHub](https://github.com/new).
+2. Authenticate and push:
+```bash
+git push -u origin main
+```
+*(You will be prompted for your GitHub username `straifi` and your GitHub Personal Access Token or SSH key).*
+
+---
+
+## ☁️ Google Cloud Deployment
+
+The agent is pre-configured to deploy on Google Cloud project **`geapp-2026`** using Google Cloud Agent Engine / Cloud Run.
+
+### 1. Set Google Cloud Project
+```bash
+gcloud config set project geapp-2026
+```
+
+### 2. Deploy the Agent
+```bash
 agents-cli deploy
 ```
-To set up your production infrastructure, run `agents-cli infra cicd`.
 
-## Observability
+---
 
-Built-in telemetry exports to Cloud Trace, BigQuery, and Cloud Logging.
+## 🛠️ API Reference
 
-## A2A Inspector
-
-This agent supports the [A2A Protocol](https://a2a-protocol.org/). Use the [A2A Inspector](https://github.com/a2aproject/a2a-inspector) to test interoperability.
-See the [A2A Inspector docs](https://github.com/a2aproject/a2a-inspector) for details.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | `GET` | Main 4-tab interactive investment dashboard |
+| `/dashboard` | `GET` | Dashboard alias |
+| `/api/dashboard-data` | `GET` | Returns top 5 recommendations for all 4 domains (cached for speed) |
+| `/api/refresh` | `POST` | Triggers a fresh live scan of all asset domains |
+| `/api/chat` | `POST` | Chat with the investment coordinator or domain subagents |
+| `/dev-ui` | `GET` | ADK Developer Playground |
+| `/a2a/app/*` | `POST` | A2A Protocol endpoints for multi-agent interoperability |
+| `/api/reasoning_engine` | `POST` | Vertex AI Reasoning Engine contract endpoint |
